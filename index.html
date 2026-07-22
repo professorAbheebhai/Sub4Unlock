@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sub4Unlock 🔓 · Lock Links Behind Social Actions</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+        /* ============ CSS VARIABLES ============ */
+        :root {
+            --bg: #FAFBFF;
+            --soft-bg: #F0F2FA;
+            --field-bg: #F4F5FA;
+            --card-border: #E8E9F2;
+            --card-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+            --card-shadow-hover: 0 8px 32px rgba(16, 24, 40, 0.08);
+            --ink: #1A1B23;
+            --muted: #8B8D98;
+            --blue: #2F5FED;
+            --blue-glow: rgba(47, 95, 237, 0.35);
+            --amber: #F5A623;
+            --amber-glow: rgba(245, 166, 35, 0.35);
+            --mint: #22C55E;
+            --mint-glow: rgba(34, 197, 94, 0.35);
+            --violet: #8B5CF6;
+            --violet-glow: rgba(139, 92, 246, 0.4);
+            --card-radius: 22px;
+            --transition-fast: 0.18s cubic-bezier(0.22, 0.9, 0.3, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
+        }
+        body.dark {
+            --bg: #0D0B1A;
+            --soft-bg: #13102A;
+            --field-bg: #1A1638;
+            --card-border: #282448;
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.35);
+            --ink: #F0EDFA;
+            --muted: #9C93B8;
+        }
+
+        /* Gate always uses its own dark palette */
+        .gate {
+            --g-bg1: #1C1730;
+            --g-bg2: #100C1E;
+            --g-field: #241D3D;
+            --g-line: rgba(255, 255, 255, 0.08);
+            --g-text: #F4F1FB;
+            --g-muted: #9C93B8;
+            --g-card: rgba(28, 23, 48, 0.8);
+        }
+
+        /* ============ RESET & BASE ============ */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            transition: background var(--transition-smooth), color var(--transition-smooth);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        .display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ============ ANIMATED BACKGROUND ORBS ============ */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+            will-change: transform;
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb:nth-child(1) {
+            width: 420px;
+            height: 420px;
+            background: var(--blue-glow);
+            top: -10%;
+            left: -8%;
+            animation-delay: 0s;
+            animation-duration: 20s;
+        }
+        .bg-orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: var(--violet-glow);
+            bottom: -12%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 22s;
+        }
+        .bg-orb:nth-child(3) {
+            width: 280px;
+            height: 280px;
+            background: var(--amber-glow);
+            top: 50%;
+            left: 55%;
+            animation-delay: -14s;
+            animation-duration: 19s;
+        }
+        .bg-orb:nth-child(4) {
+            width: 200px;
+            height: 200px;
+            background: var(--mint-glow);
+            top: 30%;
+            left: -5%;
+            animation-delay: -3s;
+            animation-duration: 24s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(60px, -40px) scale(1.08);
+            }
+            50% {
+                transform: translate(-30px, 50px) scale(0.94);
+            }
+            75% {
+                transform: translate(-50px, -30px) scale(1.05);
+            }
+        }
+
+        /* ============ APP WRAPPER ============ */
+        #app {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            padding: 28px 20px 18px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 13px;
+            background: color-mix(in srgb, var(--blue) 12%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px var(--blue-glow);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--blue-glow);
+            }
+            50% {
+                box-shadow: 0 0 35px var(--blue-glow), 0 0 60px rgba(47, 95, 237, 0.2);
+            }
+        }
+        .brand-title {
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .brand-title span {
+            color: var(--blue);
+        }
+        .subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 8px;
+            max-width: 520px;
+            line-height: 1.5;
+        }
+        .theme-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--field-bg);
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        .theme-btn:hover {
+            border-color: var(--blue);
+            box-shadow: 0 0 18px var(--blue-glow);
+        }
+        .theme-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* ============ MAIN LAYOUT ============ */
+        main {
+            padding: 0 20px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        @media(min-width:1024px) {
+            main {
+                flex-direction: row;
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+        }
+        .col-form {
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .col-preview {
+            width: 100%;
+        }
+        @media(min-width:1024px) {
+            .col-preview {
+                width: 400px;
+                position: sticky;
+                top: 24px;
+            }
+        }
+
+        /* ============ CARD ============ */
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+            padding: 20px 22px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            box-shadow: var(--card-shadow-hover);
+            border-color: color-mix(in srgb, var(--blue) 20%, var(--card-border));
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        /* ============ LABEL ============ */
+        .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* ============ FIELD ============ */
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--field-bg);
+            border-radius: 15px;
+            padding: 14px 16px;
+            transition: all var(--transition-fast);
+            border: 1.5px solid transparent;
+        }
+        .field:focus-within {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(47, 95, 237, 0.08);
+        }
+        .field svg {
+            flex-shrink: 0;
+            color: var(--muted);
+        }
+        .field .divider {
+            width: 1px;
+            height: 18px;
+            background: var(--card-border);
+            flex-shrink: 0;
+        }
+        .field input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--ink);
+            font-family: inherit;
+        }
+        .field input::placeholder {
+            color: var(--muted);
+        }
+
+        /* ============ CHIP GRID ============ */
+        .chip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media(min-width:480px) {
+            .chip-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        .chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            border: none;
+            border-radius: 15px;
+            padding: 11px 6px 11px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.2px;
+        }
+        .chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            filter: brightness(1.08);
+        }
+        .chip:active {
+            transform: scale(0.96);
+            transition: transform 0.1s;
+        }
+        .chip .left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .chip .plus {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+        .chip:hover .plus {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ============ ACTION ROW ============ */
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--field-bg);
+            border-radius: 15px;
+            padding: 11px 14px;
+            margin-top: 8px;
+            transition: all var(--transition-fast);
+            border: 1.5px solid transparent;
+            animation: slideIn 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
+        }
+        .action-row:focus-within {
+            border-color: var(--blue);
+        }
+        .action-row input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--ink);
+            font-family: inherit;
+        }
+        .action-row input::placeholder {
+            color: var(--muted);
+        }
+        .action-row button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            display: flex;
+            padding: 4px;
+            border-radius: 8px;
+            transition: all var(--transition-fast);
+        }
+        .action-row button:hover {
+            color: #E11D48;
+            background: rgba(225, 29, 72, 0.08);
+        }
+
+        /* ============ BUTTONS ============ */
+        .btn-primary {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #fff;
+            background: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px var(--blue-glow);
+            letter-spacing: -0.2px;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 8px 28px var(--blue-glow);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-primary:disabled {
+            opacity: 0.55;
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+        .btn-secondary {
+            flex: 1;
+            border: 1.5px solid var(--card-border);
+            border-radius: 15px;
+            padding: 11px;
+            font-weight: 600;
+            font-size: 14px;
+            background: var(--field-bg);
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        .btn-secondary:hover {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(47, 95, 237, 0.06);
+        }
+        .btn-blue-soft {
+            flex: 1;
+            border: none;
+            border-radius: 15px;
+            padding: 11px;
+            font-weight: 600;
+            font-size: 14px;
+            background: var(--blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            box-shadow: 0 4px 14px var(--blue-glow);
+        }
+        .btn-blue-soft:hover {
+            box-shadow: 0 8px 24px var(--blue-glow);
+            transform: translateY(-1px);
+        }
+
+        /* ============ HINT & ERROR ============ */
+        .hint {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        .error-text {
+            font-size: 14px;
+            color: #E11D48;
+            padding: 4px 6px;
+            animation: shake 0.5s ease;
+            font-weight: 500;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-6px);
+            }
+            40% {
+                transform: translateX(6px);
+            }
+            60% {
+                transform: translateX(-4px);
+            }
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* ============ GENERATED LINK CARD ============ */
+        .link-box {
+            background: var(--field-bg);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 12px;
+            word-break: break-all;
+            color: var(--ink);
+            margin-bottom: 14px;
+            border: 1.5px solid var(--card-border);
+            user-select: all;
+            line-height: 1.6;
+            transition: all var(--transition-fast);
+        }
+        .link-box:hover {
+            border-color: var(--mint);
+            box-shadow: 0 0 0 4px var(--mint-glow);
+        }
+        .code-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .code-row .ch {
+            width: 42px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--field-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            border: 1.5px solid var(--card-border);
+        }
+
+        /* ============ GATE SCREEN (always dark) ============ */
+        .gate {
+            background: linear-gradient(175deg, var(--g-bg1) 0%, var(--g-bg2) 100%);
+            border: 1px solid var(--g-line);
+            border-radius: 26px;
+            padding: 26px 22px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+        .gate::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            animation: gateGlow 8s ease-in-out infinite;
+        }
+        @keyframes gateGlow {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(20px, -15px) scale(1.15);
+                opacity: 0.8;
+            }
+        }
+        .gate>* {
+            position: relative;
+            z-index: 1;
+        }
+        .gate-head {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .gate-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: color-mix(in srgb, var(--violet) 13%, transparent);
+            border: 1.5px solid color-mix(in srgb, var(--violet) 30%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            animation: gateIconFloat 3.5s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.25);
+        }
+        @keyframes gateIconFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-9px);
+            }
+        }
+        .gate-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--g-text);
+            letter-spacing: -0.3px;
+        }
+        .gate-sub {
+            font-size: 13px;
+            color: var(--g-muted);
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .progress-track {
+            flex: 1;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--amber), #FBBF24, var(--mint));
+            transition: width 0.5s cubic-bezier(0.22, 0.9, 0.3, 1);
+            box-shadow: 0 0 12px var(--mint-glow);
+            position: relative;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+        }
+        .progress-count {
+            font-size: 12px;
+            color: var(--g-muted);
+            flex-shrink: 0;
+            font-weight: 600;
+        }
+
+        /* ============ GATE ACTION BUTTONS ============ */
+        .act-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--g-field);
+            border: 1px solid var(--g-line);
+            border-radius: 15px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        .act-btn:first-of-type {
+            margin-top: 0;
+        }
+        .act-btn:hover:not(.done) {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(2px);
+        }
+        .act-btn:active:not(.done) {
+            transform: scale(0.98);
+        }
+        .act-btn.done {
+            opacity: 0.85;
+            border-color: rgba(34, 197, 94, 0.35);
+            cursor: default;
+            background: rgba(34, 197, 94, 0.04);
+        }
+        .act-ring {
+            position: relative;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+        }
+        .act-ring svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg);
+        }
+        .act-ring .icon-slot {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .act-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .act-text .t1 {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--g-text);
+            letter-spacing: -0.2px;
+        }
+        .act-text .t2 {
+            display: block;
+            font-size: 11px;
+            color: var(--g-muted);
+            margin-top: 2px;
+            transition: color var(--transition-fast);
+        }
+        .lock-slot {
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+
+        /* ============ UNLOCK BUTTON ============ */
+        .unlock-btn {
+            width: 100%;
+            margin-top: 20px;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 13px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--g-muted);
+            transition: all var(--transition-smooth);
+            letter-spacing: -0.2px;
+        }
+        .unlock-btn.ready {
+            background: linear-gradient(135deg, var(--violet), #6D3FE0);
+            color: #fff;
+            cursor: pointer;
+            border-color: transparent;
+            box-shadow: 0 6px 24px var(--violet-glow);
+            animation: unlockPulse 2s ease-in-out infinite;
+        }
+        @keyframes unlockPulse {
+            0%,
+            100% {
+                box-shadow: 0 6px 24px var(--violet-glow);
+            }
+            50% {
+                box-shadow: 0 6px 40px var(--violet-glow), 0 0 60px rgba(139, 92, 246, 0.3);
+            }
+        }
+        .unlock-btn.ready:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px var(--violet-glow);
+        }
+        .unlock-btn.ready:active {
+            transform: scale(0.96);
+        }
+
+        /* ============ REVEAL BOX ============ */
+        .reveal-box {
+            margin-top: 14px;
+            border-radius: 16px;
+            padding: 16px;
+            background: rgba(34, 197, 94, 0.06);
+            border: 1.5px solid rgba(34, 197, 94, 0.3);
+            animation: revealPop 0.45s cubic-bezier(0.22, 0.9, 0.3, 1);
+        }
+        @keyframes revealPop {
+            from {
+                transform: scale(0.9) translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        .reveal-box .rb-label {
+            font-size: 11px;
+            color: var(--g-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+        }
+        .reveal-box .rb-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reveal-box .rb-link {
+            flex: 1;
+            min-width: 0;
+            font-size: 13px;
+            color: var(--g-text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+        .reveal-box a,
+        .reveal-box button {
+            background: var(--g-field);
+            border: 1px solid var(--g-line);
+            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--g-text);
+            flex-shrink: 0;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+        .reveal-box button:hover,
+        .reveal-box a:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .gate-brand {
+            text-align: center;
+            font-size: 11px;
+            color: var(--g-muted);
+            opacity: 0.5;
+            margin-top: 18px;
+            letter-spacing: 0.3px;
+        }
+        .gate-brand b {
+            color: var(--violet);
+            font-weight: 600;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--g-muted);
+            font-size: 13px;
+            margin-bottom: 14px;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 6px 12px;
+            border-radius: 10px;
+            transition: all var(--transition-fast);
+        }
+        .back-link:hover {
+            color: var(--g-text);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ============ CONFETTI ============ */
+        .confetti-piece {
+            position: fixed;
+            z-index: 999;
+            pointer-events: none;
+            animation: confettiFall 1.2s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) rotate(720deg) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* ============ TOAST ============ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: #1A1B23;
+            color: #F4F1FB;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            animation: toastIn 0.4s cubic-bezier(0.22, 0.9, 0.3, 1), toastOut 0.35s 2s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.2px;
+        }
+        @keyframes toastIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes toastOut {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+        }
+
+        /* ============ WHATSAPP FLOAT ============ */
+        .wa-float {
+            position: fixed;
+            right: 18px;
+            bottom: 22px;
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 28px rgba(37, 211, 102, 0.5);
+            z-index: 50;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            animation: waBounce 2.5s ease-in-out infinite;
+        }
+        @keyframes waBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            15% {
+                transform: translateY(-10px);
+            }
+            30% {
+                transform: translateY(0);
+            }
+            45% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(0);
+            }
+        }
+        .wa-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 36px rgba(37, 211, 102, 0.6);
+            animation: none;
+        }
+        .wa-float:active {
+            transform: scale(0.94);
+        }
+        .wa-float .ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 999px;
+            border: 3px solid #25D366;
+            opacity: 0.5;
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes ping {
+            75%,
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* ============ REVEAL ELEMENTS ============ */
+        .reveal-el {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.5s cubic-bezier(0.22, 0.9, 0.3, 1), transform 0.5s cubic-bezier(0.22, 0.9, 0.3, 1);
+        }
+        .reveal-el.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ RIPPLE EFFECT ============ */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* ============ REDUCED MOTION ============ */
+        @media(prefers-reduced-motion:reduce) {
+            .reveal-el {
+                transition: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .gate-icon,
+            .wa-float,
+            .bg-orb,
+            .brand-icon,
+            .unlock-btn.ready,
+            .gate::before {
+                animation: none !important;
+            }
+            .chip:hover {
+                transform: none !important;
+            }
+            .btn-primary:hover,
+            .btn-blue-soft:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ============ UTILITY ============ */
+        .hidden {
+            display: none !important;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated background orbs -->
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+
+    <!-- Main app container -->
+    <div id="app"></div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- WhatsApp floating button -->
+    <a id="waFloat" class="wa-float" href="https://whatsapp.com/channel/0029VbCREFRAe5Vx4taS2O2r" target="_blank" rel="noopener noreferrer" aria-label="Join our WhatsApp channel">
+        <span class="ring"></span>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" style="position:relative;"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.1-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 13.9c-.22.62-1.28 1.2-1.77 1.24-.45.04-.9.22-3.06-.64-2.6-1.02-4.26-3.7-4.4-3.87-.13-.17-1.06-1.4-1.06-2.68 0-1.27.67-1.9.9-2.15.24-.26.5-.32.67-.32.17 0 .34 0 .49.01.16.01.37-.06.58.44.22.53.74 1.83.8 1.96.06.13.1.28.02.45-.09.17-.13.28-.26.43-.13.15-.28.34-.4.46-.13.13-.27.27-.12.53.16.27.7 1.16 1.51 1.88 1.04.93 1.92 1.22 2.19 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.54.73 1.8.86.27.13.44.2.51.31.07.11.07.63-.15 1.25z"/></svg>
+    </a>
+
+    <script>
+        // ==================== CONSTANTS ====================
+        const WAIT_SECONDS = 8;
+
+        // ==================== PLATFORM DATA ====================
+        const PLATFORMS = [
+            { key: "youtube", label: "YouTube", color: "#EA3323", hint: "Channel URL", icon: iconYoutube },
+            { key: "whatsapp", label: "WhatsApp", color: "#2ECC71", hint: "Channel or group link", icon: iconWhatsapp },
+            { key: "telegram", label: "Telegram", color: "#1EA1E0", hint: "Channel link", icon: iconTelegram },
+            { key: "tiktok", label: "TikTok", color: "#141414", hint: "Profile link", icon: iconTiktok },
+            { key: "website", label: "Website", color: "#6C5DD3", hint: "Any page to visit", icon: iconGlobe },
+            { key: "instagram", label: "Instagram", color: "#8154D1", hint: "Profile link", icon: iconInstagram },
+            { key: "facebook", label: "Facebook", color: "#3A4A72", hint: "Page link", icon: iconFacebook },
+            { key: "x", label: "X (Twitter)", color: "#141414", hint: "Profile link", icon: iconX },
+            { key: "discord", label: "Discord", color: "#8E9AD6", hint: "Server invite", icon: iconDiscord },
+        ];
+
+        function platformFor(key) { return PLATFORMS.find(p => p.key === key) || PLATFORMS[4]; }
+
+        // ==================== SVG ICON HELPERS ====================
+        function svg(inner, size = 18, color = "currentColor", stroke = false) {
+            const attrs = stroke ?
+                `fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"` :
+                `fill="${color}"`;
+            return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" ${attrs}>${inner}</svg>`;
+        }
+
+        function iconYoutube(c, s) { return svg(
+                '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l6 3-6 3z" fill="#fff"/>', s,
+            c); }
+
+        function iconWhatsapp(c, s) { return svg(
+                '<path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.2 13.9c-.2.6-1.3 1.2-1.8 1.2-.4 0-1 .2-3-.6-2.6-1-4.3-3.7-4.4-3.9-.1-.2-1-1.4-1-2.7 0-1.3.7-1.9.9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4-.1.6.4l.8 2c.1.1.1.3 0 .4l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.1 1.5 1.8 1 .9 1.9 1.2 2.2 1.4.3.1.4.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.8.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z" fill="#fff"/>',
+                s, c); }
+
+        function iconTelegram(c, s) { return svg('<path d="M21 3L2 10.5l6 2 2 6.5 3-4 5 4z" fill="#fff"/>', s, c); }
+
+        function iconTiktok(c, s) { return svg(
+                '<path d="M15 3c.3 2 1.7 3.4 4 3.7v3c-1.5 0-2.9-.4-4-1.2v6.4a5.5 5.5 0 1 1-5.5-5.5c.3 0 .7 0 1 .1v3.1a2.4 2.4 0 1 0 1.7 2.3V3z" fill="#fff"/>',
+                s, c); }
+
+        function iconGlobe(c, s) { return svg(
+                '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" fill="none" stroke="#fff" stroke-width="1.5"/>',
+                s, c); }
+
+        function iconInstagram(c, s) { return svg(
+                '<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="#fff"/>',
+                s, c); }
+
+        function iconFacebook(c, s) { return svg(
+                '<path d="M14 21v-7h2.4l.4-3H14V9c0-.9.2-1.5 1.6-1.5H17V5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2H8.5v3H11v7z" fill="#fff"/>',
+                s, c); }
+
+        function iconX(c, s) { return svg(
+                '<path d="M5 5l14 14M19 5L5 19" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>', s,
+            c); }
+
+        function iconDiscord(c, s) { return svg(
+                '<rect x="3" y="7" width="18" height="11" rx="6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="9" cy="12.5" r="1.3" fill="#fff"/><circle cx="15" cy="12.5" r="1.3" fill="#fff"/>',
+                s, c); }
+
+        function iconLock(c, s) { return svg(
+                '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="' +
+                c + '" stroke-width="2"/>', s, c); }
+
+        function iconCheck(c, s) { return svg(
+                '<path d="M4 12.5l5 5L20 6" fill="none" stroke="' + c +
+                '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>', s, c); }
+
+        function iconCopy(c, s) { return svg(
+                '<rect x="9" y="9" width="12" height="12" rx="2" fill="none" stroke="' + c +
+                '" stroke-width="1.8"/><rect x="3" y="3" width="12" height="12" rx="2" fill="none" stroke="' + c +
+                '" stroke-width="1.8"/>', s, c); }
+
+        function iconExternal(c, s) { return svg(
+                '<path d="M9 15l11-11M14 4h6v6M20 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5" fill="none" stroke="' +
+                c + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>', s, c); }
+
+        function iconSun(c, s) { return svg(
+                '<circle cx="12" cy="12" r="4.2" fill="none" stroke="' + c +
+                '" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="' +
+                c + '" stroke-width="2" stroke-linecap="round"/>', s, c); }
+
+        function iconMoon(c, s) { return svg(
+                '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linejoin="round"/>', s, c); }
+
+        function iconKey(c, s) { return svg(
+                '<circle cx="8" cy="15" r="4" fill="none" stroke="' + c +
+                '" stroke-width="2"/><path d="M11 12l9-9M17 6l2 2M14 9l2 2" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linecap="round"/>', s, c); }
+
+        function iconSparkles(c, s) { return svg(
+                '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+                s, c); }
+
+        function iconShield(c, s) { return svg(
+                '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>', s, c); }
+
+        function iconType(c, s) { return svg(
+                '<path d="M5 5h14M12 5v14" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linecap="round"/>', s, c); }
+
+        function iconLink(c, s) { return svg(
+                '<path d="M9 15l6-6M8 17l-2 2a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0M16 7l2-2a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0" fill="none" stroke="' +
+                c + '" stroke-width="2" stroke-linecap="round"/>', s, c); }
+
+        function iconClipCheck(c, s) { return svg(
+                '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="' + c +
+                '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>', s, c); }
+
+        function plusIcon() {
+            return svg(
+                '<path d="M12 5v14M5 12h14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>',
+                13, "#fff", true);
+        }
+
+        function iconCheckCircle(c, s) {
+            return svg(
+                '<circle cx="12" cy="12" r="10" fill="none" stroke="' + c +
+                '" stroke-width="2"/><path d="M8 12l3 3 5-5" fill="none" stroke="' + c +
+                '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>', s, c);
+        }
+
+        // ==================== STATE ====================
+        let theme = "light";
+        let title = "";
+        let destination = "";
+        let actions = [];
+        let generatedLink = null;
+        let formError = "";
+
+        const app = document.getElementById("app");
+        const toastContainer = document.getElementById("toastContainer");
+
+        // ==================== TOAST SYSTEM ====================
+        function showToast(message, iconHtml = '') {
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.innerHTML = iconHtml + '<span>' + escapeHtml(message) + '</span>';
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 2400);
+        }
+
+        // ==================== CONFETTI ====================
+        function spawnConfetti(x, y) {
+            const colors = ['#8B5CF6', '#F5A623', '#22C55E', '#2F5FED', '#EA3323', '#FBBF24', '#EC4899', '#06B6D4'];
+            const count = 50;
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < count; i++) {
+                const piece = document.createElement("div");
+                piece.className = "confetti-piece";
+                const size = Math.random() * 10 + 5;
+                piece.style.cssText = `
+              left:${x + (Math.random()-0.5)*200}px;
+              top:${y}px;
+              width:${size}px;
+              height:${size * (Math.random()*1.5+0.5)}px;
+              background:${colors[Math.floor(Math.random()*colors.length)]};
+              border-radius:${Math.random()>0.5?'50%':'2px'};
+              animation-delay:${Math.random()*0.3}s;
+              animation-duration:${Math.random()*0.8+0.9}s;
+            `;
+                fragment.appendChild(piece);
+            }
+            document.body.appendChild(fragment);
+            setTimeout(() => {
+                document.querySelectorAll('.confetti-piece').forEach(p => p.remove());
+            }, 1800);
+        }
+
+        // ==================== RIPPLE EFFECT ====================
+        function addRipple(e, el) {
+            const ripple = document.createElement("span");
+            ripple.className = "ripple";
+            const rect = el.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height) * 1.5;
+            ripple.style.width = ripple.style.height = size + "px";
+            ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+            ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+            el.style.position = el.style.position || 'relative';
+            el.style.overflow = 'hidden';
+            el.appendChild(ripple);
+            ripple.addEventListener('animationend', () => ripple.remove());
+        }
+
+        // ==================== CONFIG ENCODING (UTF-8 safe) ====================
+        function encodeConfig(cfg) {
+            const json = JSON.stringify(cfg);
+            const bytes = new TextEncoder().encode(json);
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary);
+        }
+
+        function decodeConfig(str) {
+            const binary = atob(str);
+            const bytes = new Uint8Array([...binary].map(c => c.charCodeAt(0)));
+            return JSON.parse(new TextDecoder().decode(bytes));
+        }
+
+        function draftConfig() { return { title, destination: destination || "https://example.com", actions }; }
+
+        // ==================== ACTIONS MANAGEMENT ====================
+        function toggleAction(key) {
+            const exists = actions.find(a => a.platformKey === key);
+            if (exists) actions = actions.filter(a => a.platformKey !== key);
+            else actions.push({ id: key + "-" + Date.now(), platformKey: key, url: "" });
+            render();
+        }
+
+        function updateActionUrl(id, val) {
+            const a = actions.find(a => a.id === id);
+            if (a) a.url = val;
+        }
+
+        // ==================== GENERATE LINK ====================
+        function generate() {
+            formError = "";
+            if (!destination.trim()) { formError =
+                "🔗 Please add the link you want to lock first."; render(); return; }
+            if (actions.length === 0) { formError =
+                "📲 Add at least one social action for people to complete."; render(); return; }
+            if (actions.some(a => !a.url.trim())) { formError =
+                "✏️ Every action needs its link filled in — check above."; render(); return; }
+            const cfg = { title, destination, actions };
+            const encoded = encodeConfig(cfg);
+            generatedLink = location.origin + location.pathname + "#g=" + encoded;
+            render();
+            // Scroll to top of the generated card
+            setTimeout(() => {
+                const linkBox = document.getElementById("linkBox");
+                if (linkBox) linkBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 200);
+        }
+
+        function resetBuilder() {
+            title = "";
+            destination = "";
+            actions = [];
+            generatedLink = null;
+            formError = "";
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== COPY TO CLIPBOARD (robust) ====================
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('✅ Link copied to clipboard!',
+                        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+                }).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            ta.style.top = "-9999px";
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try {
+                document.execCommand("copy");
+                showToast('✅ Link copied!',
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+            } catch (e) {
+                showToast('⚠️ Could not copy. Please select and copy manually.');
+            }
+            document.body.removeChild(ta);
+        }
+
+        // ==================== GATE (LOCK) SCREEN RENDERING ====================
+        function renderGateInto(container, config, opts = {}) {
+            container.innerHTML = "";
+            const doneIds = new Set();
+            let revealed = false;
+
+            const gate = document.createElement("div");
+            gate.className = "gate reveal-el in";
+            container.appendChild(gate);
+
+            // Header
+            const head = document.createElement("div");
+            head.className = "gate-head";
+            head.innerHTML = `
+            <div class="gate-icon">${iconLock("var(--amber)", 24)}</div>
+            <div class="gate-title display">${config.title ? escapeHtml(config.title) : "Link is locked"}</div>
+            <div class="gate-sub">Complete all actions below — each auto-verifies after ${WAIT_SECONDS}s</div>`;
+            gate.appendChild(head);
+
+            // Progress
+            const progWrap = document.createElement("div");
+            progWrap.className = "progress-wrap";
+            const total = config.actions.length;
+            progWrap.innerHTML = `
+            <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+            <span class="progress-count mono">0/${total}</span>`;
+            gate.appendChild(progWrap);
+            const fillEl = progWrap.querySelector(".progress-fill");
+            const countEl = progWrap.querySelector(".progress-count");
+
+            // Action list
+            const list = document.createElement("div");
+            gate.appendChild(list);
+            if (total === 0) {
+                list.innerHTML =
+                    `<p style="text-align:center;color:var(--g-muted);font-size:13px;padding:16px 0;">No actions configured yet.</p>`;
+            }
+
+            // Unlock button
+            const unlockBtn = document.createElement("button");
+            unlockBtn.className = "unlock-btn";
+            unlockBtn.innerHTML = `${iconLock("var(--g-muted)", 16)} <span>Locked · finish actions above</span>`;
+            unlockBtn.disabled = true;
+            gate.appendChild(unlockBtn);
+
+            // Reveal host
+            const revealHost = document.createElement("div");
+            gate.appendChild(revealHost);
+
+            // Brand
+            if (opts.brand !== false) {
+                const brand = document.createElement("p");
+                brand.className = "gate-brand";
+                brand.innerHTML = `Secured by <b>Sub4Unlock 🔓</b>`;
+                gate.appendChild(brand);
+            }
+
+            function updateProgress() {
+                const done = doneIds.size;
+                fillEl.style.width = (total ? (done / total * 100) : 0) + "%";
+                countEl.textContent = done + "/" + total;
+                const allDone = total > 0 && done >= total;
+                unlockBtn.className = "unlock-btn" + (allDone ? " ready" : "");
+                unlockBtn.innerHTML = allDone ?
+                    `${iconShield("#fff", 16)} <span>Unlock link now</span>` :
+                    `${iconLock("var(--g-muted)", 16)} <span>Locked · finish actions above</span>`;
+                unlockBtn.disabled = !allDone;
+            }
+
+            unlockBtn.addEventListener("click", (e) => {
+                if (unlockBtn.disabled || revealed) return;
+                revealed = true;
+                // Spawn confetti near the button
+                const rect = unlockBtn.getBoundingClientRect();
+                spawnConfetti(rect.left + rect.width / 2, rect.top);
+                revealHost.innerHTML = `
+              <div class="reveal-box">
+                <div class="rb-label">🎉 Your link is ready!</div>
+                <div class="rb-row">
+                  <div class="rb-link mono">${escapeHtml(config.destination)}</div>
+                  <button type="button" data-copy title="Copy link">${iconCopy("var(--g-text)", 14)}</button>
+                  <a href="${escapeAttr(config.destination)}" target="_blank" rel="noopener noreferrer" title="Open link">${iconExternal("var(--g-text)", 14)}</a>
+                </div>
+              </div>`;
+                const copyBtn = revealHost.querySelector("[data-copy]");
+                if (copyBtn) {
+                    copyBtn.addEventListener("click", (ev) => {
+                        ev.stopPropagation();
+                        addRipple(ev, copyBtn);
+                        copyToClipboard(config.destination);
+                    });
+                }
+                // Scroll reveal into view
+                revealHost.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            // Build action buttons
+            config.actions.forEach(a => {
+                const p = platformFor(a.platformKey);
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "act-btn";
+                const size = 44,
+                    stroke = 3.5,
+                    r = (size - stroke) / 2,
+                    c = 2 * Math.PI * r;
+                btn.innerHTML = `
+              <span class="act-ring">
+                <svg width="${size}" height="${size}">
+                  <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="rgba(255,255,255,0.12)" stroke-width="${stroke}" fill="none"/>
+                  <circle class="ring-progress" cx="${size/2}" cy="${size/2}" r="${r}" stroke="${p.color}" stroke-width="${stroke}" fill="none"
+                    stroke-dasharray="${c}" stroke-dashoffset="${c}" stroke-linecap="round" style="transition:stroke-dashoffset 0.15s linear"/>
+                </svg>
+                <span class="icon-slot">${p.icon("#fff", 18)}</span>
+              </span>
+              <span class="act-text">
+                <span class="t1">${p.label}</span>
+                <span class="t2">Tap to visit — verifies automatically</span>
+              </span>
+              <span class="lock-slot">${iconLock("var(--g-muted)", 15)}</span>`;
+                list.appendChild(btn);
+
+                const ring = btn.querySelector(".ring-progress");
+                const iconSlot = btn.querySelector(".icon-slot");
+                const t2 = btn.querySelector(".t2");
+                const lockSlot = btn.querySelector(".lock-slot");
+                let status = "idle",
+                    timer = null;
+
+                btn.addEventListener("click", (ev) => {
+                    if (status !== "idle") return;
+                    addRipple(ev, btn);
+                    if (a.url) { try { window.open(a.url, "_blank", "noopener"); } catch (e) {} }
+                    status = "running";
+                    const start = Date.now();
+                    timer = setInterval(() => {
+                        const elapsed = (Date.now() - start) / 1000;
+                        const rem = Math.max(0, WAIT_SECONDS - elapsed);
+                        const pct = (WAIT_SECONDS - rem) / WAIT_SECONDS;
+                        ring.style.strokeDashoffset = c * (1 - Math.min(1, Math.max(0,
+                            pct)));
+                        t2.textContent = "Verifying… " + Math.ceil(rem) + "s";
+                        if (rem <= 0) {
+                            clearInterval(timer);
+                            status = "done";
+                            btn.classList.add("done");
+                            btn.disabled = true;
+                            ring.setAttribute("stroke", "var(--mint)");
+                            ring.style.strokeDashoffset = "0";
+                            iconSlot.innerHTML = iconCheck("var(--mint)", 18);
+                            t2.textContent = "✅ Verified";
+                            lockSlot.innerHTML = "";
+                            doneIds.add(a.id);
+                            updateProgress();
+                            if (doneIds.size >= total && total > 0 && !revealed) {
+                                unlockBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                    }, 100);
+                });
+            });
+
+            updateProgress();
+        }
+
+        function escapeHtml(s) { const d = document.createElement("div");
+            d.textContent = s; return d.innerHTML; }
+
+        function escapeAttr(s) { return String(s).replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
+
+        // ==================== BUILDER UI RENDERING ====================
+        function render() {
+            app.innerHTML = "";
+
+            const wrap = document.createElement("div");
+            wrap.style.minHeight = "100vh";
+
+            // Header
+            const header = document.createElement("header");
+            header.innerHTML = `
+            <div>
+              <div class="brand">
+                <div class="brand-icon">${iconKey("var(--blue)", 18)}</div>
+                <span class="brand-title display">Sub4Unlock 🔓<span>Vault</span></span>
+              </div>
+              <p class="subtitle">Lock any link behind subscribe & follow actions — each auto-verifies after ${WAIT_SECONDS}s. No backend needed.</p>
+            </div>
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle dark mode"></button>`;
+            wrap.appendChild(header);
+            header.querySelector("#themeToggle").innerHTML = theme === "light" ? iconMoon("var(--ink)", 18) : iconSun(
+                "var(--ink)", 18);
+            header.querySelector("#themeToggle").addEventListener("click", (e) => {
+                addRipple(e, header.querySelector("#themeToggle"));
+                theme = theme === "light" ? "dark" : "light";
+                document.body.classList.toggle("dark", theme === "dark");
+                render();
+            });
+
+            const main = document.createElement("main");
+            wrap.appendChild(main);
+
+            const colForm = document.createElement("section");
+            colForm.className = "col-form";
+            main.appendChild(colForm);
+
+            if (generatedLink) {
+                // --- Generated link card ---
+                const card = document.createElement("div");
+                card.className = "card reveal-el";
+                const code = generatedLink.split("#g=")[1] || "";
+                const shortDisplay = (code.slice(0, 6) + "…" + code.slice(-4)).toUpperCase();
+                card.innerHTML = `
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                ${iconSparkles("var(--amber)", 20)}
+                <h3 class="display" style="font-size:18px;font-weight:600;margin:0;letter-spacing:-0.3px;">Your gate is live!</h3>
+              </div>
+              <p class="hint" style="margin-top:0;margin-bottom:12px;">Copy this link & share it anywhere. The entire gate lives inside the link — no server required.</p>
+              <div class="link-box mono" id="linkBox">${escapeHtml(generatedLink)}</div>
+              <div class="code-row"><span class="ch mono">${shortDisplay.slice(0,3)}</span><span class="ch mono">${shortDisplay.slice(3,6)}</span><span class="ch mono">${shortDisplay.slice(7)}</span></div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-secondary" id="copyLinkBtn">${iconCopy("var(--ink)", 15)} Copy link</button>
+                <button class="btn-blue-soft" id="openLinkBtn">${iconExternal("#fff", 15)} Open gate</button>
+              </div>
+              <button id="resetBtn" style="width:100%;margin-top:14px;background:none;border:none;color:var(--muted);font-size:13px;padding:8px;cursor:pointer;font-family:inherit;border-radius:10px;transition:all var(--transition-fast);">← Build another gate</button>`;
+                colForm.appendChild(card);
+
+                const linkBoxEl = card.querySelector("#linkBox");
+                card.querySelector("#copyLinkBtn").addEventListener("click", (e) => {
+                    addRipple(e, card.querySelector("#copyLinkBtn"));
+                    copyToClipboard(generatedLink);
+                    // Brief highlight animation
+                    linkBoxEl.style.borderColor = "var(--mint)";
+                    linkBoxEl.style.boxShadow = "0 0 0 6px var(--mint-glow)";
+                    setTimeout(() => {
+                        linkBoxEl.style.borderColor = "var(--card-border)";
+                        linkBoxEl.style.boxShadow = "";
+                    }, 800);
+                });
+                card.querySelector("#openLinkBtn").addEventListener("click", (e) => {
+                    addRipple(e, card.querySelector("#openLinkBtn"));
+                    location.hash = "g=" + code;
+                    showGateFromHash();
+                });
+                card.querySelector("#resetBtn").addEventListener("click", resetBuilder);
+            } else {
+                // --- Builder form ---
+                // Title card
+                const titleCard = document.createElement("div");
+                titleCard.className = "card reveal-el";
+                titleCard.innerHTML =
+                    `<div class="field">${iconType("var(--muted)", 18)}<span class="divider"></span><input id="titleInput" placeholder="Enter a title for your gate… (optional)" maxlength="80"/></div>`;
+                colForm.appendChild(titleCard);
+                const titleInput = titleCard.querySelector("#titleInput");
+                titleInput.value = title;
+                titleInput.addEventListener("input", (e) => { title = e.target.value;
+                    updatePreviewTexts(); });
+
+                // Actions card
+                const actCard = document.createElement("div");
+                actCard.className = "card reveal-el";
+                actCard.innerHTML =
+                    `<span class="label">📲 Social actions to complete</span><div class="chip-grid" id="chipGrid"></div><div id="selectedActions"></div>`;
+                colForm.appendChild(actCard);
+                const chipGrid = actCard.querySelector("#chipGrid");
+                PLATFORMS.forEach(p => {
+                    const active = !!actions.find(a => a.platformKey === p.key);
+                    const chip = document.createElement("button");
+                    chip.type = "button";
+                    chip.className = "chip";
+                    chip.style.background = p.color;
+                    chip.style.transform = active ? "scale(0.97)" : "scale(1)";
+                    chip.style.opacity = active ? "0.85" : "1";
+                    chip.innerHTML =
+                        `<span class="left">${p.icon("#fff", 15)}${p.label}</span><span class="plus">${active ? iconX("#fff", 12) : plusIcon()}</span>`;
+                    chip.addEventListener("click", (e) => {
+                        addRipple(e, chip);
+                        toggleAction(p.key);
+                    });
+                    chipGrid.appendChild(chip);
+                });
+                renderSelectedActions(actCard.querySelector("#selectedActions"));
+
+                // Destination card
+                const destCard = document.createElement("div");
+                destCard.className = "card reveal-el";
+                destCard.innerHTML = `
+              <span class="label">🔗 Link to lock</span>
+              <div class="field">${iconLink("var(--amber)", 17)}<span class="divider"></span><input id="destInput" class="mono" placeholder="https://example.com/your-premium-content" maxlength="2000"/></div>
+              <p class="hint">⏱ Each social action auto-verifies <b>${WAIT_SECONDS} seconds</b> after someone taps it.</p>`;
+                colForm.appendChild(destCard);
+                const destInput = destCard.querySelector("#destInput");
+                destInput.value = destination;
+                destInput.addEventListener("input", (e) => { destination = e.target.value; });
+
+                // Error
+                if (formError) {
+                    const err = document.createElement("p");
+                    err.className = "error-text";
+                    err.textContent = formError;
+                    colForm.appendChild(err);
+                }
+
+                // Generate button
+                const genBtn = document.createElement("button");
+                genBtn.className = "btn-primary reveal-el";
+                genBtn.innerHTML = `${iconKey("#fff", 18)} Generate locked gate`;
+                genBtn.addEventListener("click", (e) => {
+                    addRipple(e, genBtn);
+                    generate();
+                });
+                colForm.appendChild(genBtn);
+            }
+
+            // Live preview aside
+            const aside = document.createElement("aside");
+            aside.className = "col-preview";
+            aside.innerHTML =
+                `<span class="label" style="padding:0 4px;">👁 Live preview</span><div class="card" style="background:var(--soft-bg);border:none;padding:14px;" id="previewHost"></div>`;
+            main.appendChild(aside);
+
+            app.appendChild(wrap);
+            renderGateInto(aside.querySelector("#previewHost"), draftConfig(), { brand: false });
+
+            setupReveal();
+            setupRippleListeners();
+        }
+
+        function renderSelectedActions(host) {
+            host.innerHTML = "";
+            actions.forEach(a => {
+                const p = platformFor(a.platformKey);
+                const row = document.createElement("div");
+                row.className = "action-row";
+                row.innerHTML =
+                    `${p.icon(p.color, 16)}<input placeholder="${p.hint}" maxlength="2000"/><button type="button" title="Remove">${iconX("var(--muted)", 15)}</button>`;
+                const input = row.querySelector("input");
+                input.value = a.url;
+                input.addEventListener("input", (e) => updateActionUrl(a.id, e.target.value));
+                row.querySelector("button").addEventListener("click", (e) => {
+                    addRipple(e, row.querySelector("button"));
+                    toggleAction(a.platformKey);
+                });
+                host.appendChild(row);
+            });
+        }
+
+        function updatePreviewTexts() {
+            const t = document.querySelector("#previewHost .gate-title");
+            if (t) t.textContent = title ? title : "Link is locked";
+        }
+
+        function setupReveal() {
+            const els = document.querySelectorAll(".reveal-el");
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add("in");
+                        obs.unobserve(e.target); }
+                });
+            }, { threshold: 0.08 });
+            els.forEach((el, i) => { el.style.transitionDelay = (i * 35) + "ms";
+                obs.observe(el); });
+        }
+
+        function setupRippleListeners() {
+            document.querySelectorAll('.btn-primary, .btn-secondary, .btn-blue-soft, .chip').forEach(btn => {
+                if (!btn.dataset.rippleBound) {
+                    btn.dataset.rippleBound = '1';
+                    btn.addEventListener('click', function(e) { addRipple(e, this); });
+                }
+            });
+        }
+
+        // ==================== ROUTING ====================
+        function showGateFromHash() {
+            const m = location.hash.match(/g=([^&]+)/);
+            if (!m) return false;
+            let cfg;
+            try { cfg = decodeConfig(m[1]); } catch (e) { return false; }
+            app.innerHTML = "";
+            const page = document.createElement("div");
+            page.style.cssText =
+                "min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--g-bg2, #100C1E);";
+            const inner = document.createElement("div");
+            inner.style.cssText = "width:100%;max-width:400px;";
+            const back = document.createElement("button");
+            back.className = "back-link";
+            back.innerHTML = "← Back to builder";
+            back.addEventListener("click", () => { location.hash = "";
+                resetBuilder(); });
+            inner.appendChild(back);
+            const gateHost = document.createElement("div");
+            inner.appendChild(gateHost);
+            page.appendChild(inner);
+            app.appendChild(page);
+            renderGateInto(gateHost, cfg);
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return true;
+        }
+
+        // ==================== INIT ====================
+        window.addEventListener("hashchange", () => { if (!showGateFromHash()) render(); });
+        if (!showGateFromHash()) render();
+
+        // Initial theme
+        document.body.classList.toggle("dark", theme === "dark");
+
+        console.log('%c🔓 Sub4Unlock %cReady %c| %cLock links behind social actions',
+            'font-weight:700;font-size:16px;color:#8B5CF6;',
+            'color:#22C55E;font-weight:600;',
+            '',
+            'color:#9C93B8;');
+        console.log('%c💡 Tip: Fill in your links → Generate → Share the gate link!',
+            'color:#F5A623;font-size:13px;');
+    </script>
+</body>
+</html>
